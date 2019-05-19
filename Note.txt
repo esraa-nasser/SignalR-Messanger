@@ -1,0 +1,2 @@
+In Registeration You should Browse for image in Following Directory:
+Project\SignalRProject15\SignalRProject15\Layoutresources

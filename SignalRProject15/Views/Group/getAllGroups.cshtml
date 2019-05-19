@@ -1,0 +1,24 @@
+﻿@model IEnumerable<MessangerChat.Models.Entity.Group>
+<div class="row" style="display:inline-flex;width:100%">
+    
+    <div style="margin-top:1%;width:15%;margin-right:2%">
+        <ul id="ul" class="list-group" style="margin-left:0%">
+            @if (ViewBag.count > 0)
+            {
+                foreach (var item in Model)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center" onclick="inchat(this)" data-assigned-id="@item.groupId">
+                        <span style="cursor:pointer"> @Html.DisplayFor(modelItem => item.group_name)</span>
+                    </li>
+
+                }
+            }
+            else
+            {
+                <li id="no" class="list-group-item d-flex justify-content-between align-items-center" style="width:200%;font-size:19px;height:5%"> There's no Groups Yet..</li>
+            }
+        </ul>
+    </div>
+</div>
+
+

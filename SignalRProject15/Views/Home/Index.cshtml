@@ -1,0 +1,45 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+@model  MessangerChat.Models.ApplicationUser
+@{
+    ViewBag.Title = "Chat";
+}
+
+<div class="row" style="margin-left:4%">
+    <div class="column left" style="margin-top:2%;margin-right:10%;width:30%;display:inline-flex">
+        <div class="card" style="width:110%">
+            <div class="card-body">
+                <img class="card-img-top" src="@Url.Content(Model.Image)" style="width:70%;height:15%;border-radius:50%" />
+                <h5 style="height:15px;margin-top:5%;margin-left:19%;font-size:18px;width:30%;font-weight:bold">@Model.UserName</h5>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="column middle" style="margin-top:-15%;margin-left:30%;width:15%;text-align:center">
+    <p style="font-size:16px;font-weight:bold">You're in <strong>@ViewBag.count</strong> Groups</p>
+</div>
+
+<div class="column right" style="width:14%;margin-left:55%;margin-top:-2.3%;text-align:center">
+    <p style="font-size:16px;font-weight:bold">You Have <strong>@ViewBag.users</strong> in Contacts</p></div>
+
+@section scripts{
+    <script src="~/Scripts/jquery-3.0.0.min.js"></script>
+    <script src="~/Scripts/jquery.signalR-2.4.0.min.js"></script>
+    <script>
+        var prox;
+        $(function () {
+            var con = $.hubConnection();
+            prox = con.createHubProxy("messengerHub");
+            con.start().done(function () { console.log("connection from layout") })
+            prox.on("lognew", function () {
+                console.log("hello from layout")
+            });
+            (function () {
+                console.log("function invoked")
+                prox.invoke("log");
+            }())
+        })
+    </script>
+}

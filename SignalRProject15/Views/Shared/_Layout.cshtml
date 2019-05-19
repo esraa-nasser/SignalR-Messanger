@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @Styles.Render("~/Content/bootstrap.min.css")
+    @*<link href="~/Content/bootstrap.min.css" rel="stylesheet" />*@
+
+</head>
+<body style="background-image:url(../../Layoutresources/superherobackground.jpg);background-position:center;background-size:auto;overflow:hidden">
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                    <li>@Html.ActionLink("Friends", "GetAllUsersWithChat", "Home")</li>
+                    <li>@Html.ActionLink("Groups", "Index", "Group")</li>
+                    <li>
+                        @if (ViewBag.countMsg > 0)
+                        {
+                            <button class="btn btn-default btn-lg  btn-link" style="font-size:40px;margin-top:-20%;margin-bottom:-10%">
+
+                                <span class="glyphicon glyphicon-globe" style="color:red;font-weight:bold;font-size:20px;margin-top:5%">
+
+                                    @ViewBag.countMsg
+
+                                </span>
+                            </button>
+                        }
+                        else
+                        {
+                            <button class="btn btn-default btn-lg  btn-link" style="font-size:40px;margin-top:-28%;margin-bottom:-25%" onclick="location.href='@Url.Action("GetAllUsersWithChat","Home")'">
+
+                                <span class="glyphicon glyphicon-globe" style="font-weight:bold;font-size:20px;margin-top:5%">
+
+                                </span>
+
+                            </button>}
+                    </li>
+                </ul>
+                @Html.Partial("_LoginPartial")
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        @RenderBody()
+
+
+    </div>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,92 @@
+﻿@model IEnumerable<MessangerChat.Models.ApplicationUser>
+@{
+    ViewBag.Title = "GetAllUsersWithChat";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .online_icon {
+        position: absolute;
+        height: 15px;
+        width: 15px;
+        background-color: #4cd137;
+        border-radius: 50%;
+        bottom: 0.2em;
+        right: 0.4em;
+        border: 1.5px solid white;
+    }
+
+    .offline {
+        background-color: #c23616 !important;
+    }
+</style>
+<div class="row" style="display:inline-flex;width:100%">
+    <div id="stds" style="margin-left:8%;margin-right:25%;margin-top:2%"></div>
+    <div style="margin-top:1%;width:15%;margin-right:10%">
+        <ul class="list-group" style="margin-left:0%">
+            @if (ViewBag.users > 0)
+            {
+                foreach (var item in Model)
+                {
+            <li class="list-group-item d-flex justify-content-between align-items-center" id="clickon" onclick="chat(this)" data-assigned-id="@item.Id">
+                <span style="cursor:pointer"><img style="width:20%;border-radius:50%" src="@Url.Content(item.Image)" /></span>
+                <span style="cursor:pointer"> @Html.DisplayFor(modelItem => item.UserName)</span>
+           
+                @if (@ViewBag.on.Contains(item.Id))
+                {
+                    <span style="margin-bottom: 8%" class="online_icon"></span>
+                }
+                
+                else
+                {
+                <span class="offline" style="margin-bottom: 8%">1m</span>
+
+                }
+            </li>
+
+                }
+            }
+            else
+            {
+                <li class="list-group-item d-flex justify-content-between align-items-center" style="width:20%;font-size:19px"> There's no Connections Yet..</li>
+            }
+        </ul>
+    </div>
+</div>
+@section scripts{
+    <script src="~/Scripts/jquery-3.0.0.min.js"></script>
+    <script src="~/Scripts/jquery.signalR-2.4.0.min.js"></script>
+    <script>      
+        var prox;
+        $(function () {
+            var con = $.hubConnection();
+            prox = con.createHubProxy("messengerHub");
+            con.start().done(function () { console.log("connection from layout") })
+            prox.on("lognew", function () {
+                console.log("hello from layout")
+            });
+            (function () {
+                console.log("function invoked")
+                prox.invoke("log");
+            }())
+        })
+    </script>
+    <script>
+        function chat(id) {
+            var _id=($(id).data('assigned-id'));
+            $.ajax
+                ({
+                type: 'Get',
+                url: '@Url.Action("Startchat", "Home")',
+                data: { id: _id },
+                success: function (result) {
+                    $("#stds").html(result);
+                },
+                error: function (e)
+                {
+                    console.log(e);
+                }
+                })
+                }
+    </script>
+}

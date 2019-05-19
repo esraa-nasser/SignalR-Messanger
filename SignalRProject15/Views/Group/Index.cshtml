@@ -1,0 +1,103 @@
+﻿
+@{
+    ViewBag.Title = "Chat With Group";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div id="m" style="margin-bottom:10%;margin-left:4%;width:40%;text-align:center">
+    @Html.Action("getAllGroups", "Group")
+</div>
+<div id="groups" style="margin-top:2%;margin-left:35%;width:40%"></div>
+<div style="margin-top:-14%;margin-left:50%">
+    <div class="input-group mb-3">
+        @*<div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1"></span>
+        </div>*@
+        <input  type="text" id="name" class="form-control" placeholder="Group Name" aria-label="Username" aria-describedby="basic-addon1">
+        <button type="button" id="gr"  class="btn btn-info" style="margin-top:-21%;margin-left:105%">Join</button>
+    </div>
+</div>
+
+<div id="newM" class="container">   
+</div>
+    @section scripts
+{
+        <script src="~/Scripts/jquery-3.0.0.min.js"></script>
+        <script src="~/Scripts/jquery.signalR-2.4.0.min.js"></script>
+        <script>
+        var prox;
+        $(function () {
+            var con = $.hubConnection();
+            prox = con.createHubProxy("messengerHub");
+            con.start().done(function () { console.log("connection Group") })
+            prox.on("newMember", function (userName, groupName) {  
+                              
+                var div = document.createElement('div')
+                var div1 = document.createElement('div')
+                var h4 = document.createElement('h4')
+                var p = document.createElement('p')
+                var a = document.createElement('a')
+                div.className = "card"
+                div.style.width = "50%"               
+                div1.className = "card-body"
+                h4.className = "card-title"
+                h4.innerText = userName 
+                p.className = "card-text"
+                p.innerText = userName + " Joined: "
+                p.innerText += groupName
+                a.className = "btn btn-primary"
+                a.innerText = "Private Chat"
+                a.attributes.href = "#"
+                div1.appendChild(h4)
+                div1.appendChild(p)
+                div1.appendChild(a)
+                div.appendChild(div1)
+                $("#newM").append(div);
+            })
+        });
+        $("#gr").click(function () {
+            var n = $('#name').val();
+
+            console.log(n);
+            $.ajax({
+                type: "Post",
+                success: function () {
+                    prox.invoke("joinGroup", $('#name').val())
+                    var ul = document.getElementById("ul");
+                    var li = document.createElement('li');
+                    var span = document.createElement('span');
+                    li.className = "list-group-item";
+                    li.className += " d-flex";
+                    li.className += " justify-content-between";
+                    li.className += " align-items-center";
+                    span.style.cursor = "pointer";
+                    span.innerText = n;
+                    var del = document.getElementById("no");
+                    if ($(ul).has(del).length > 0) {
+                        ul.removeChild(del);
+                    };
+                    li.appendChild(span);
+                    ul.appendChild(li);                  
+                    $("li").on("click", function () {
+                        inchat(id)
+                    })
+                    document.getElementById('name').value = "";
+                }
+            })
+
+        })
+        function inchat(id) {
+            var idx = ($(id).data('assigned-id'));
+            $.ajax({
+                type: 'Get',
+                data: { id: idx },
+                url: '@Url.Action("sendToGroup","Group")',
+                success: function (res) {
+                    $("#groups").html(res);
+                }, error: function (err) {
+                    console.log(err);
+                }
+            })
+        }
+        </script>
+    }
+
